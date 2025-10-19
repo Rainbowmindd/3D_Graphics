@@ -1,42 +1,98 @@
 #X3D V3.3 utf8
 
-DEF Floor Transform{
+DirectionalLight { direction -0.5 -1 -0.5 intensity 0.3 } 
+
+DEF WallAppearance Appearance {
+    material Material {
+        diffuseColor 0.9 0.7 0.7 
+    }
+}
+
+DEF Floor Transform {
     translation 0 -3 0
     children [
         Shape {
             appearance Appearance {
-                material Material {
-                    diffuseColor 0 0 1
-                }
+                material Material { diffuseColor 0.1 0.4 0.1 } # 
             }
-            geometry Box { size 20 0.1 20 }
+            geometry Box { size 40 0.1 40 }
         }
     ]
 }
 
-DEF Wall Transform{
-    children DEF LeftWall Transform{
-        translation -5 0 0
-        children [
-            Shape {
-                appearance Appearance {
-                    material Material {
-                        diffuseColor 1 0 0
-                    }
-                }
-                geometry Box { size 0.1 6 2 }
-            }
-        ]
-    }
-    translation 0 0 -10
+DEF MazeWalls Transform {
     children [
-        Shape {
-            appearance Appearance {
-                material Material {
-                    diffuseColor 1 1 1
+        #zewnatrz
+        Transform { translation -15 0 0 children [ Shape { appearance USE WallAppearance geometry Box { size 0.5 6 30 } } ] }
+        Transform { translation 15 0 0 children [ Shape { appearance USE WallAppearance geometry Box { size 0.5 6 30 } } ] }
+        
+        #sciana z dziura na drzwi
+        Transform { translation -8.5 0 -15 children [ Shape { appearance USE WallAppearance geometry Box { size 13 6 0.5 } } ] }
+        Transform { translation 8.5 0 -15 children [ Shape { appearance USE WallAppearance geometry Box { size 13 6 0.5 } } ] }
+        
+        Transform { translation 0 0 15 children [ Shape { appearance USE WallAppearance geometry Box { size 30 6 0.5 } } ] }
+
+        #wewnetrzne sciany
+        Transform { translation -10 0 -10 children [ Shape { appearance USE WallAppearance geometry Box { size 10 6 0.5 } } ] }
+        Transform { translation 5 0 -10 children [ Shape { appearance USE WallAppearance geometry Box { size 10 6 0.5 } } ] }
+        Transform { translation 0 0 -5 children [ Shape { appearance USE WallAppearance geometry Box { size 0.5 6 10 } } ] }
+        Transform { translation -7.5 0 -2.5 children [ Shape { appearance USE WallAppearance geometry Box { size 0.5 6 5 } } ] }
+        Transform { translation 7.5 0 0 children [ Shape { appearance USE WallAppearance geometry Box { size 0.5 6 8 } } ] }
+        Transform { translation 3 0 5 children [ Shape { appearance USE WallAppearance geometry Box { size 0.5 6 10 } } ] }
+        Transform { translation -3 0 7.5 children [ Shape { appearance USE WallAppearance geometry Box { size 0.5 6 10 } } ] }
+
+        #poziom
+        Transform { translation -12 0 5 children [ Shape { appearance USE WallAppearance geometry Box { size 6 6 0.5 } } ] }
+        Transform { translation 10 0 7.5 children [ Shape { appearance USE WallAppearance geometry Box { size 10 6 0.5 } } ] }
+        Transform { translation -10 0 10 children [ Shape { appearance USE WallAppearance geometry Box { size 10 6 0.5 } } ] }
+        Transform { translation 0 0 12.5 children [ Shape { appearance USE WallAppearance geometry Box { size 15 6 0.5 } } ] }
+        Transform { translation 8 0 -7.5 children [ Shape { appearance USE WallAppearance geometry Box { size 10 6 0.5 } } ] }
+
+        #additional
+        Transform { translation -5 0 0 children [ Shape { appearance USE WallAppearance geometry Box { size 8 6 0.5 } } ] }
+        Transform { translation -2 0 -8 children [ Shape { appearance USE WallAppearance geometry Box { size 4 6 0.5 } } ] }
+        Transform { translation 12 0 3 children [ Shape { appearance USE WallAppearance geometry Box { size 6 6 0.5 } } ] }
+        Transform { translation -12 0 -5 children [ Shape { appearance USE WallAppearance geometry Box { size 6 6 0.5 } } ] }
+    ]
+}
+
+DEF DoorParentTransform Transform {
+    translation 2 0 -14.75 
+    children [
+        DEF DoorRotation Transform {
+            children [
+                Transform {
+                    translation -2 0 0 
+                    children [
+                        DEF DoorTouchSensor TouchSensor { }
+                        Shape {
+                            appearance Appearance {
+                                material Material { diffuseColor 1 1 1 } 
+                            }
+                            geometry Box { size 4 6 0.3 }
+                        }
+                    ]
                 }
-            }
-            geometry Box { size 20 6 1 }
+            ]
         }
     ]
 }
+
+DEF DoorTimer TimeSensor {
+    cycleInterval 4
+    loop FALSE
+}
+
+DEF DoorRotationInterpolator OrientationInterpolator {
+    key [0, 0.25, 0.75, 1]
+    keyValue [
+        0 1 0 0,
+        0 1 0 1.5708,
+        0 1 0 1.5708,
+        0 1 0 0
+    ]
+}
+
+ROUTE DoorTouchSensor.touchTime TO DoorTimer.startTime
+ROUTE DoorTimer.fraction_changed TO DoorRotationInterpolator.set_fraction
+ROUTE DoorRotationInterpolator.value_changed TO DoorRotation.set_rotation
