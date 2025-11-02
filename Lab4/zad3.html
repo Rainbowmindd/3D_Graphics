@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+    <script src="./x3dom-full.js"></script>
+</head>
+
+<body>
+    <x3d width="'500px" height="400px">
+        <scene>
+            <transform translation="0 2.1 0">
+                <shape>
+                    <appearance>
+                        <material diffuseColor="1 1 0"></material>
+                    </appearance>
+                    <box id="headSize" size="0.7 0.7 0.7"></box>
+                </shape>
+            </transform>
+            <transform translation="0 1.3 0">
+                <shape>
+                    <appearance>
+                        <material id="tshirtColor" diffuseColor="0 0 1"></material>
+                    </appearance>
+                    <box size="1 1 1"></box>
+                </shape>
+            </transform>
+            <transform translation="0.75 1.2 0">
+                <shape>
+                    <appearance>
+                        <material diffuseColor="0 0 1"></material>
+                    </appearance>
+                    <box size="0.5 1.2 0.5"></box>
+                </shape>
+            </transform>
+            <transform translation="-0.75 1.2 0">
+                <shape>
+                    <appearance>
+                        <material diffuseColor="0 0 1"></material>
+                    </appearance>
+                    <box size="0.5 1.2 0.5"></box>
+                </shape>
+            </transform>
+            <transform translation="0.25 0.5 0">
+                <shape>
+                    <appearance>
+                        <material diffuseColor="0 0 1"></material>
+                    </appearance>
+                    <box size="0.5 1.5 0.5"></box>
+                </shape>
+            </transform>
+            <transform translation="-0.25 0.5 0">
+                <shape>
+                    <appearance>
+                        <material diffuseColor="0 0 1"></material>
+                    </appearance>
+                    <box size="0.5 1.5 0.5"></box>
+                </shape>
+            </transform>
+            <transform translation="-0.15 2.2 0.35">
+                <shape>
+                    <appearance>
+                        <material id="rightEye" diffuseColor="0 1 0"></material>
+                    </appearance>
+                    <box size="0.2 0.2 0.2"></box>
+                </shape>
+            </transform>
+            <transform translation="0.15 2.2 0.35">
+                <shape>
+                    <appearance>
+                        <material id="leftEye" diffuseColor="0 1 0"></material>
+                    </appearance>
+                    <box size="0.2 0.2 0.2"></box>
+                </shape>
+            </transform>
+        </scene>
+    </x3d>
+    <div>
+        <label for="colorSlider">T-shirt color</label>
+        <input type="color" name="colorSlider" id="colorSlider" value="#0000ff">
+    </div>
+    <div>
+        <label for="sizeSlider">Head size</label>
+        <input type="range" id="sizeSlider" min="0.1" max="3" step="0.1" value="1.0">
+        <span id="size">1.0</span>
+    </div>
+    <script>
+        let leftEye = document.getElementById('leftEye')
+        let rightEye = document.getElementById('rightEye')
+        let isGreen = true
+        setInterval(function () {
+            if (isGreen) {
+                leftEye.setAttribute('diffuseColor', `0 1 0`);
+                rightEye.setAttribute('diffuseColor', `0 1 0`);
+                isGreen = false
+            }
+            else {
+                leftEye.setAttribute('diffuseColor', `0 0 0`);
+                rightEye.setAttribute('diffuseColor', `0 0 0`);
+                isGreen = true
+            }
+        }, 1000)
+
+        const color = document.getElementById("colorSlider")
+        const tshirtColor = document.getElementById("tshirtColor")
+        color.addEventListener('input', function () {
+            const kolor = color.value
+            const r = parseInt(kolor.substring(1, 3), 16) / 255
+            const g = parseInt(kolor.substring(3, 5), 16) / 255
+            const b = parseInt(kolor.substring(5, 7), 16) / 255
+            tshirtColor.setAttribute('diffuseColor', `${r} ${g} ${b}`);
+        })
+
+        let sizeSlider = document.getElementById('sizeSlider')
+        let size = document.getElementById('size')
+        let headSize = document.getElementById('headSize')
+        sizeSlider.addEventListener('input', function () {
+            const new1 = sizeSlider.value
+            headSize.setAttribute('size', `${new1} ${new1} ${new1}`);
+            size.textContent = new1
+        })
+    </script>
+</body>
+
+</html>

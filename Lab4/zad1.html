@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+    <script src="./x3dom-full.js"></script>
+</head>
+
+<body>
+    <x3d width="'500px" height="400px">
+        <scene>
+            <transform id="kula">
+                <shape>
+                    <appearance>
+                        <material diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <sphere radius="0.5"></sphere>
+                </shape>
+            </transform>
+        </scene>
+    </x3d>
+    <script>
+        function animateSphere() {
+            let angle = 0;
+            let radius = 1;
+            const kula = document.getElementById('kula');
+            setInterval(function () {
+                let x = radius * Math.cos(angle);
+                let y = radius * Math.sin(angle);
+                kula.setAttribute('translation', `${x} ${y} 0`);
+                angle += 0.02;
+            })
+        }
+        animateSphere()
+    </script>
+</body>
+
+</html>
