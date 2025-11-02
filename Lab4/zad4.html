@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+    <script src="./x3dom-full.js"></script>
+</head>
+
+<body>
+    <x3d width="'500px" height="400px">
+        <scene>
+            <transform translation="0 0.7 0">
+                <shape>
+                    <appearance>
+                        <material id="lightRed" diffuseColor="1 0 0"></material>
+                    </appearance>
+                    <sphere radius="0.5"></sphere>
+                </shape>
+            </transform>
+            <transform>
+                <shape>
+                    <appearance>
+                        <material id="lightYellow" diffuseColor="1 1 0"></material>
+                    </appearance>
+                    <sphere radius="0.5"></sphere>
+                </shape>
+            </transform>
+            <transform translation="0 -0.7 0">
+                <shape>
+                    <appearance>
+                        <material id="lightGreen" diffuseColor="0 1 0"></material>
+                    </appearance>
+                    <sphere radius="0.5"></sphere>
+                </shape>
+            </transform>
+        </scene>
+    </x3d>
+    <script>
+        let lightRed = document.getElementById('lightRed');
+        let lightYellow = document.getElementById('lightYellow');
+        let lightGreen = document.getElementById('lightGreen');
+        let currentState = 0;
+
+        setInterval(function () {
+            let phase = currentState % 4;
+            if (phase === 0) {
+                lightRed.setAttribute('diffuseColor', `1 0 0`);
+                lightYellow.setAttribute('diffuseColor', `0.5 0.5 0.5`);
+                lightGreen.setAttribute('diffuseColor', `0.5 0.5 0.5`);
+            } else if (phase === 1) {
+                lightRed.setAttribute('diffuseColor', `0.5 0.5 0.5`);
+                lightYellow.setAttribute('diffuseColor', `1 1 0`);
+                lightGreen.setAttribute('diffuseColor', `0.5 0.5 0.5`);
+            } else if (phase === 2) {
+                lightRed.setAttribute('diffuseColor', `0.5 0.5 0.5`);
+                lightYellow.setAttribute('diffuseColor', `0.5 0.5 0.5`);
+                lightGreen.setAttribute('diffuseColor', `0 1 0`);
+            } else if (phase === 3) {
+                lightRed.setAttribute('diffuseColor', `0.5 0.5 0.5`);
+                lightYellow.setAttribute('diffuseColor', `1 1 0`);
+                lightGreen.setAttribute('diffuseColor', `0.5 0.5 0.5`);
+            }
+
+            currentState += 1;
+        }, 1000);
+    </script>
+</body>
+
+</html>

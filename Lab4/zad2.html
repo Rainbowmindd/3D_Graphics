@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+    <script src="./x3dom-full.js"></script>
+</head>
+
+<body>
+    <x3d width="'500px" height="400px">
+        <scene>
+            <transform>
+                <shape>
+                    <appearance>
+                        <material diffuseColor="1 0 0"></material>
+                    </appearance>
+                    <pointset>
+                        <coordinate point="" id="points"></coordinate>
+                    </pointset>
+                </shape>
+            </transform>
+        </scene>
+    </x3d>
+    <script>
+        let startx = -2;
+        let starty = 0;
+        let startz = 0;
+        const points = [];
+        let stepsize = 0.5;
+
+        //MK
+        for (let i = 0; i < 5; i++) {
+            let x = startx;
+            let y = starty + i * stepsize;
+            let z = startz;
+            points.push(`${x} ${y} ${z}`);
+        }
+        for (let i = 0; i < 3; i++) {
+            let x = startx + i * stepsize;
+            let y = starty + (4 - i) * stepsize;
+            let z = startz;
+            points.push(`${x} ${y} ${z}`);
+        }
+        for (let i = 0; i < 3; i++) {
+            let x = startx + 1.5 * stepsize;
+            let y = starty + i * stepsize;
+            let z = startz;
+            points.push(`${x} ${y} ${z}`);
+        }
+        for (let i = 0; i < 3; i++) {
+            let x = startx + 3 * stepsize - i * stepsize;
+            let y = starty + (4 - i) * stepsize;
+            let z = startz;
+            points.push(`${x} ${y} ${z}`);
+        }
+        for (let i = 0; i < 5; i++) {
+            let x = startx + 3 * stepsize;
+            let y = starty + i * stepsize;
+            let z = startz;
+            points.push(`${x} ${y} ${z}`);
+        }
+
+        let offsetX = startx + 4 * stepsize;
+        for (let i = 0; i < 5; i++) {
+            let x = offsetX;
+            let y = starty + i * stepsize;
+            let z = startz;
+            points.push(`${x} ${y} ${z}`);
+        }
+        for (let i = 0; i < 3; i++) {
+            let x = offsetX + i * stepsize;
+            let y = starty + (2 - i) * stepsize;
+            let z = startz;
+            points.push(`${x} ${y} ${z}`);
+        }
+        for (let i = 0; i < 3; i++) {
+            let x = offsetX + i * stepsize;
+            let y = starty + (2 + i) * stepsize;
+            let z = startz;
+            points.push(`${x} ${y} ${z}`);
+        }
+
+        const pointsEl = document.getElementById('points');
+        pointsEl.setAttribute('point', points.join(","));
+    </script>
+</body>
+
+</html>
