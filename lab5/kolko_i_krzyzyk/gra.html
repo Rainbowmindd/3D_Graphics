@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Kółko i krzyżyk (X3DOM) - Twilight vs Spike</title>
+    <script src="./x3dom-full.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 10px;
+        }
+
+        #ui {
+            margin: 10px auto;
+            width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #status {
+            font-size: 18px;
+        }
+
+        button {
+            padding: 8px 14px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Kółko i krzyżyk — Twilight (O) vs Spike (X)</h2>
+    <div id="ui">
+        <div id="status">Ruch: <strong id="turn">X (Spike)</strong></div>
+        <div>
+            <button id="resetBtn">Reset</button>
+        </div>
+    </div>
+
+    <x3d width="900px" height="900px" style="display:block; margin:0 auto;">
+        <scene>
+            <transform translation="0 1 0">
+                <shape>
+                    <appearance>
+                        <material diffuseColor="0.5 0.5 0.5"></material>
+                    </appearance>
+                    <box size="5 5 0.1"></box>
+                </shape>
+            </transform>
+
+            <transform id="cell0" translation="-1.5 2.5 0.2" onclick="makeMove(0)">
+                <shape>
+                    <appearance>
+                        <imageTexture url=""></imageTexture>
+                        <material diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="1.1 1.1 0.1"></box>
+                </shape>
+            </transform>
+
+            <transform id="cell1" translation="0 2.5 0.2" onclick="makeMove(1)">
+                <shape>
+                    <appearance>
+                        <imageTexture url=""></imageTexture>
+                        <material diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="1.1 1.1 0.1"></box>
+                </shape>
+            </transform>
+
+            <transform id="cell2" translation="1.5 2.5 0.2" onclick="makeMove(2)">
+                <shape>
+                    <appearance>
+                        <imageTexture url=""></imageTexture>
+                        <material diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="1.1 1.1 0.1"></box>
+                </shape>
+            </transform>
+
+            <transform id="cell3" translation="-1.5 1 0.2" onclick="makeMove(3)">
+                <shape>
+                    <appearance>
+                        <imageTexture url=""></imageTexture>
+                        <material diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="1.1 1.1 0.1"></box>
+                </shape>
+            </transform>
+
+            <transform id="cell4" translation="0 1 0.2" onclick="makeMove(4)">
+                <shape>
+                    <appearance>
+                        <imageTexture url=""></imageTexture>
+                        <material diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="1.1 1.1 0.1"></box>
+                </shape>
+            </transform>
+
+            <transform id="cell5" translation="1.5 1 0.2" onclick="makeMove(5)">
+                <shape>
+                    <appearance>
+                        <imageTexture url=""></imageTexture>
+                        <material diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="1.1 1.1 0.1"></box>
+                </shape>
+            </transform>
+
+            <transform id="cell6" translation="-1.5 -0.5 0.2" onclick="makeMove(6)">
+                <shape>
+                    <appearance>
+                        <imageTexture url=""></imageTexture>
+                        <material diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="1.1 1.1 0.1"></box>
+                </shape>
+            </transform>
+
+            <transform id="cell7" translation="0 -0.5 0.2" onclick="makeMove(7)">
+                <shape>
+                    <appearance>
+                        <imageTexture url=""></imageTexture>
+                        <material diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="1.1 1.1 0.1"></box>
+                </shape>
+            </transform>
+
+            <transform id="cell8" translation="1.5 -0.5 0.2" onclick="makeMove(8)">
+                <shape>
+                    <appearance>
+                        <imageTexture url=""></imageTexture>
+                        <material diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="1.1 1.1 0.1"></box>
+                </shape>
+            </transform>
+        </scene>
+    </x3d>
+
+    <script type="text/javascript">
+        const IMG_X = 'spike.jpg';
+        const IMG_O = 'twilight.jpg';
+        const statusEl = document.getElementById('turn');
+
+        let board = ['', '', '', '', '', '', '', '', ''];
+        let current = 'X';
+        let gameOver = false;
+
+        const combos = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        function updateStatus() {
+            statusEl.textContent = current === 'X' ? 'X (Spike)' : 'O (Twilight)';
+        }
+
+        function getImageTextureElem(cellEl) {
+            return cellEl.querySelector('ImageTexture') || cellEl.querySelector('imageTexture');
+        }
+
+        function setCellImage(index, player) {
+            const cell = document.getElementById('cell' + index);
+            const img = getImageTextureElem(cell);
+            if (!img) return;
+            if (player === 'X') img.setAttribute('url', IMG_X);
+            else if (player === 'O') img.setAttribute('url', IMG_O);
+            else img.setAttribute('url', '');
+        }
+
+        function setCellColor(index, r, g, b) {
+            const cell = document.getElementById('cell' + index);
+            const mat = cell.querySelector('Material') || cell.querySelector('material');
+            if (!mat) return;
+            mat.setAttribute('diffuseColor', `${r} ${g} ${b}`);
+        }
+
+        function checkWin(p) {
+            for (const c of combos) {
+                if (board[c[0]] === p && board[c[1]] === p && board[c[2]] === p) return c;
+            }
+            return null;
+        }
+
+        function isDraw() {
+            return board.every(x => x === 'X' || x === 'O');
+        }
+
+        function makeMove(index) {
+            if (gameOver || board[index] !== '') return;
+            board[index] = current;
+            setCellImage(index, current);
+
+            const win = checkWin(current);
+            if (win) {
+                win.forEach(i => setCellColor(i, 0.6, 1, 0.6));
+                gameOver = true;
+                setTimeout(() => alert(current + ' wygrał!'), 10);
+                return;
+            }
+
+            if (isDraw()) {
+                gameOver = true;
+                setTimeout(() => alert('Remis!'), 10);
+                return;
+            }
+
+            current = current === 'X' ? 'O' : 'X';
+            updateStatus();
+        }
+
+        function resetGame() {
+            board = ['', '', '', '', '', '', '', '', ''];
+            current = 'X';
+            gameOver = false;
+            for (let i = 0; i < 9; i++) {
+                setCellImage(i, '');
+                setCellColor(i, 1, 1, 1);
+            }
+            updateStatus();
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const resetBtn = document.getElementById('resetBtn');
+            resetBtn.addEventListener('click', resetGame);
+
+
+            for (let i = 0; i < 9; i++) {
+                const cell = document.getElementById('cell' + i);
+                cell.addEventListener('click', () => makeMove(i));
+            }
+
+            updateStatus();
+        });
+    </script>
+</body>
+
+</html>
